@@ -15,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.Security.UserDetailService;
 import com.example.Security.JwtAuthenticationFilter;
+import com.example.Security.UserDetailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -88,7 +88,8 @@ public class SecurityConfig {
 
                         // POUR LE COURS : On autorise cette route pour le test microservice avec Taskboard
                         .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
-
+                        // Pour
+                        .requestMatchers("/test-feigh/**").permitAll()
                         // Authentification et création de compte (pas de token requis ici, on vient pour s'authentifier)
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
