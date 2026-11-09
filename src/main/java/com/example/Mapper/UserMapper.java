@@ -9,9 +9,6 @@ import com.example.Model.UserModel;
 @Component
 public class UserMapper {
 
-    /**
-     * Convertit un DTO de création/mise à jour en Entité JPA.
-     */
     public UserModel toEntity(UserRequestDTO dto) {
         UserModel user = new UserModel();
         user.setName(dto.getName());
@@ -20,9 +17,6 @@ public class UserMapper {
         return user;
     }
 
-    /**
-     * Convertit une Entité JPA en DTO de réponse (sans mot de passe).
-     */
     public UserResponseDTO toResponseDTO(UserModel user) {
         return UserResponseDTO.builder()
                 .id(user.getId())
