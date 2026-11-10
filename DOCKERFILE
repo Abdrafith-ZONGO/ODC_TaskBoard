@@ -1,0 +1,31 @@
+# On part d'une image de depart : "3.9-eclipse-temurin-21-alpine" contenant
+# Maven 3.9 et Eclipse Temurin JDK 21 sur Alpine Linux et on le renomme "build"
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
+# On cree et on ce place dans un dossier de travaille appeler : "app" a l'adresse "/app"
+# dans l'image de depart "build"
+WORKDIR /app
+# On copie le "pom.xml" dans le dossier de travail "/app" de l'image de depart "build"
+COPY pom.xml .
+# On execute la commande "mvn dependency:go-offline -B" 
+# pour telecharger  et installer toutes les dependances Maven necessaires dans notre espace app
+RUN mvn dependency:go-offline -B
+# On copie le code de notre application 
+# dans le dossier de travail "/app/src" de l'image de depart "build"
+COPY src ./src
+# On complie le projet et on genere le fichier jar de l'application 
+# dans le dossier "/app/target" de l'image de depart "build"
+RUN mvn clean package -DskipTests
+
+# On cree une nouvelle image de depart : "eclipse-temurin:21-jre-alpine" contenant
+# Eclipse Temurin JRE 21 sur Alpine Linux
+FROM eclipse-temurin:21-jre-alpine
+# On cree et on ce place dans un dossier de travaille appeler : "app" a l'adresse "/app"
+WORKDIR /app
+# dans le build ont part chercher notre fihier jar 
+#generer par maven dans le dossier "/app/target" de l'image de depart "build"
+COPY --from=build /app/target/*.jar app.jar
+# On expose le port 8080 pour que l'application 
+# soit accessible depuis l'exterieur de l'image
+EXPOSE 8080
+# Les commandes suivantes sont executees lorsque l'image est lancee
+ENTRYPOINT ["java","-jar","app.jar"]

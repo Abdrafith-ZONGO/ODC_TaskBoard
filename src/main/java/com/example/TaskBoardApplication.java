@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients 
+@EnableFeignClients
 public class TaskBoardApplication {
 
 	public static void main(String[] args) {

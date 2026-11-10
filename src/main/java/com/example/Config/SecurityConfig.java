@@ -88,7 +88,7 @@ public class SecurityConfig {
 
                         // POUR LE COURS : On autorise cette route pour le test microservice avec Taskboard
                         .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
-                        // Pour
+                        // Pour tester la recuperation d'utilisateurs
                         .requestMatchers("/test-feigh/**").permitAll()
                         // Authentification et création de compte (pas de token requis ici, on vient pour s'authentifier)
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
