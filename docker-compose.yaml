@@ -1,0 +1,55 @@
+services:
+
+  # ============================================
+  # SERVICE "app" : votre application Spring Boot
+  # ============================================
+  app:
+    # Pas d'image toute prête ici : on construit nous-mêmes
+    # l'image à partir du Dockerfile présent dans ce dossier
+    build: .
+
+    # Mapping de ports : <port de votre machine> : <port dans le conteneur>
+    # Rend l'application accessible sur http://localhost:8080
+    ports:
+      - "8080:8080"
+
+    # Variables d'environnement lues automatiquement par Spring Boot
+    # pour configurer la connexion à la base de données
+    environment:
+      # "db" = le nom du service défini plus bas, PAS localhost ni une IP.
+      # Deux conteneurs sur le même réseau Compose se joignent par leur nom.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/taskboard_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+    # Démarre "db" avant "app"
+    # (garantit juste que le conteneur a démarré, pas que Postgres
+    # est déjà prêt à accepter des connexions)
+    depends_on:
+      - db
+
+  # ============================================
+  # SERVICE "db" : la base de données PostgreSQL
+  # ============================================
+  db:
+    # Ici on utilise directement l'image officielle depuis Docker Hub
+    image: postgres:16
+
+    # Variables lues par l'image officielle postgres pour s'auto-configurer :
+    # elle crée automatiquement cette base, cet utilisateur et ce mot de passe
+    environment:
+      POSTGRES_DB: taskboard_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    # Volume : fait persister les données de la base
+    # même si le conteneur est supprimé et recréé
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+# ============================================
+# Déclaration du volume nommé, géré par Docker
+# (référencé dans le service "db" ci-dessus)
+# ============================================
+volumes:
+  db_data:
